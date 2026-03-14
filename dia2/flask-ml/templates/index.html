@@ -248,13 +248,13 @@
     <div class="container">
         <h1>Calcula el precio de tu casa con IA</h1>
         
-        <form>
+        <form action="/" method="POST">
             <div class="form-group">
                 <label for="habitaciones">Número de habitaciones</label>
                 <input 
                     type="number" 
                     id="habitaciones" 
-                    name="habitaciones" 
+                    name="rooms" 
                     min="1" 
                     max="20" 
                     placeholder="Ej: 3"
@@ -263,27 +263,20 @@
             </div>
 
             <div class="button-container">
-                <label for="modalToggle" class="calculate-btn">
-                    Calcular precio con IA
-                </label>
+                <input type="submit" value="Calcular precio con IA" class="calculate-btn"/>
             </div>
         </form>
-    </div>
-
-    <div class="modal-overlay">
-        <div class="modal-content">
+        
+        {% if precio %}
+        <hr/>
             <h2>Precio estimado</h2>
             <p>Basado en el análisis de IA</p>
             
             <div class="price-display">
                 <div class="price-label">Precio de tu casa</div>
-                <div class="price-value">$10,000</div>
+                <div class="price-value">$ {{precio}}</div>
             </div>
-
-            <label for="modalToggle" class="close-btn">
-                Cerrar
-            </label>
-        </div>
+        {% endif %}
     </div>
 </body>
 </html>
