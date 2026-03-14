@@ -7,6 +7,12 @@
 
 <h1>PRIMERA PAGINA CON HTML Y FLASK</h1>
 <p>Mi nombre es {{nombre}}</p>
-
+<form action="/suma" method="POST" >
+    <input type="text" name="num1"/>
+    +
+    <input type="text" name="num2"/>
+    <input type="submit" value="resultado"/>
+    = {{resultado}}
+</form>
 </body>
 </html>
