@@ -68,6 +68,25 @@ def housing_price():
     }
     
     return jsonify(context)
+
+###### RUTAS PARA HOUSING API
+@app.route('/housing',methods=['POST'])
+def set_data():
+    rooms = request.json['rooms']
+    price = predict_price(rooms)
+    
+    #registramos los datos en la tabla
+    new_housing = Housing(rooms)
+    new_housing.price = price
+    db.session.add(new_housing)
+    db.session.commit()
+    
+    data_schema = HousingSchema()
+    
+    context = data_schema.dump(new_housing)
+    
+    return jsonify(context)
+
     
 if __name__ == '__main__':
     app.run(debug=True)
