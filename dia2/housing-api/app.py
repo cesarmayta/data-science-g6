@@ -120,6 +120,25 @@ def update_data(id):
     
     return jsonify(data_schema.dump(data)),200
 
+@app.route('/housing/<int:id>',methods=['DELETE'])
+def delete_data(id):
+    data = Housing.query.get(id)
+    
+    if not data:
+        context = {
+            'message':'Registro no encontrado'
+        }
+        return jsonify(context),404
+    
+    db.session.delete(data) #delete from housing
+    db.session.commit()
+    
+    context = {
+        'message':'Registro eliminado correctamente'
+    }
+    
+    return jsonify(context),200
+
     
 if __name__ == '__main__':
     app.run(debug=True)
