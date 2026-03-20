@@ -100,6 +100,26 @@ def get_data_by_id(id):
     
     return jsonify(data_schema.dump(data)),200 if data else 404
 
+@app.route('/housing/<int:id>',methods=['PUT'])
+def update_data(id):
+    data = Housing.query.get(id) #select * from housing where id = id
+    if not data:
+        context = {
+            'message':'Registro no encontrado'
+        }
+        return jsonify(context),404
+    
+    rooms = request.json['rooms']
+    price = predict_price(rooms)
+    
+    data.rooms = rooms
+    data.price = price
+    db.session.commit()
+    
+    data_schema = HousingSchema()
+    
+    return jsonify(data_schema.dump(data)),200
+
     
 if __name__ == '__main__':
     app.run(debug=True)
