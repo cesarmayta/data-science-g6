@@ -87,6 +87,19 @@ def set_data():
     
     return jsonify(context)
 
+@app.route('/housing',methods=['GET'])
+def get_data():
+    data = Housing.query.all() # select * from housing
+    data_schema = HousingSchema(many=True)
+    return jsonify(data_schema.dump(data))
+
+@app.route('/housing/<int:id>',methods=['GET'])
+def get_data_by_id(id):
+    data = Housing.query.get(id) # select * from housing where id = id
+    data_schema = HousingSchema()
+    
+    return jsonify(data_schema.dump(data)),200 if data else 404
+
     
 if __name__ == '__main__':
     app.run(debug=True)
