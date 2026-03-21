@@ -11,6 +11,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+### CREAMOS UNA CLASE QUE VA A CONVERTIRSE EN UNA TABLA SQL
+
 class Housing(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     rooms = db.Column(db.Integer,nullable=False)
