@@ -11,6 +11,9 @@ class TipoInmueble(models.Model):
 class Ciudad(models.Model):
     nombre = models.CharField(max_length=100)
     
+    class Meta:
+        verbose_name_plural = "ciudades"
+    
     def __str__(self):
         return self.nombre
 
@@ -33,3 +36,13 @@ class Inmueble(models.Model):
     
     def __str__(self):
         return self.titulo
+    
+class Comentario(models.Model):
+    usuario = models.ForeignKey(User,on_delete=models.RESTRICT)
+    inmueble = models.ForeignKey(Inmueble,on_delete=models.RESTRICT,
+                                 related_name='comentarios')
+    texto = models.TextField()
+    fecha = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return self.texto
