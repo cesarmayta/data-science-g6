@@ -37,6 +37,15 @@ class Inmueble(models.Model):
     def __str__(self):
         return self.titulo
     
+class ImagenInmueble(models.Model):
+    inmueble = models.ForeignKey(Inmueble,on_delete=models.CASCADE,
+                                 related_name='imagenes')
+    imagen = models.ImageField(upload_to='inmuebles')
+    descripcion = models.CharField(max_length=255,default='')
+    
+    def __str__(self):
+        return self.descripcion
+    
 class Comentario(models.Model):
     usuario = models.ForeignKey(User,on_delete=models.RESTRICT)
     inmueble = models.ForeignKey(Inmueble,on_delete=models.RESTRICT,

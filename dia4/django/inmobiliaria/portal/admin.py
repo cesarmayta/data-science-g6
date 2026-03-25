@@ -6,4 +6,5 @@ admin.site.register(Inmueble)
 admin.site.register(Ciudad)
 admin.site.register(Agente)
 admin.site.register(Comentario)
+admin.site.register(ImagenInmueble)
 
