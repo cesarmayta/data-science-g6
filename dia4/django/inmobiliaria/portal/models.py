@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 class TipoInmueble(models.Model):
@@ -12,6 +13,13 @@ class Ciudad(models.Model):
     
     def __str__(self):
         return self.nombre
+
+class Agente(models.Model):
+    usuario = models.OneToOneField(User,on_delete=models.RESTRICT)
+    telefono = models.CharField(max_length=20)
+    
+    def __str__(self):
+        return self.usuario.username
     
 class Inmueble(models.Model):
     titulo = models.CharField(max_length=200)
@@ -20,6 +28,7 @@ class Inmueble(models.Model):
     habitaciones = models.IntegerField(default=1)
     tipo = models.ForeignKey(TipoInmueble,on_delete=models.RESTRICT)
     ciudad = models.ForeignKey(Ciudad,on_delete=models.RESTRICT,default=1)
+    agente = models.ForeignKey(Agente,on_delete=models.RESTRICT,default=1)
     
     
     def __str__(self):
