@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Inmueble
 
+from .forms import RegistroAgenteForm
+
 # Create your views here.
 def lista_inmuebles(request):
     inmuebles = Inmueble.objects.all() # select * from portal_inmueble
@@ -17,3 +19,14 @@ def detalle_inmueble(request,id):
         'inmueble':inmueble
     }
     return render(request,'portal/detalle.html',context)
+
+def registro_agente(request):
+    context = {}
+    if request.method == "POST":
+        pass
+    else:
+        form = RegistroAgenteForm()
+        context = {
+            'form':form
+        }
+    return render(request,'portal/registro.html',context)
