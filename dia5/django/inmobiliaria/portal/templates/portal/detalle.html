@@ -1,0 +1,170 @@
+{% extends 'portal/base.html' %}
+
+{% block content %}
+<div class="container px-4 px-lg-5 mt-4">
+    <div class="row g-4 align-items-start">
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-3 p-md-4">
+                    {% with imagen_principal=inmueble.imagenes.first %}
+                        <div class="bg-light rounded overflow-hidden mb-3">
+                            {% if imagen_principal %}
+                                <img
+                                    id="imagenPrincipal"
+                                    class="img-fluid w-100"
+                                    src="{{ imagen_principal.imagen.url }}"
+                                    alt="{{ imagen_principal.descripcion|default:inmueble.titulo }}"
+                                    style="height: 480px; object-fit: cover;"
+                                >
+                            {% else %}
+                                <img
+                                    id="imagenPrincipal"
+                                    class="img-fluid w-100"
+                                    src="https://dummyimage.com/900x600/dee2e6/6c757d.jpg&text=Sin+imagen"
+                                    alt="Sin imagen disponible"
+                                    style="height: 480px; object-fit: cover;"
+                                >
+                            {% endif %}
+                        </div>
+                    {% endwith %}
+
+                    {% if inmueble.imagenes.all %}
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <button type="button" class="btn btn-outline-dark btn-sm" id="prevImagen">
+                                <i class="bi bi-chevron-left"></i>
+                                Anterior
+                            </button>
+                            <span class="text-muted small">Galeria del inmueble</span>
+                            <button type="button" class="btn btn-outline-dark btn-sm" id="nextImagen">
+                                Siguiente
+                                <i class="bi bi-chevron-right"></i>
+                            </button>
+                        </div>
+
+                        <div class="row g-2" id="miniaturasGaleria">
+                            {% for imagen in inmueble.imagenes.all %}
+                                <div class="col-4 col-sm-3">
+                                    <button
+                                        type="button"
+                                        class="btn p-0 border rounded overflow-hidden w-100 miniatura-galeria {% if forloop.first %}border-dark{% else %}border-2{% endif %}"
+                                        data-src="{{ imagen.imagen.url }}"
+                                        data-alt="{{ imagen.descripcion|default:inmueble.titulo }}"
+                                        data-index="{{ forloop.counter0 }}"
+                                        aria-label="Ver imagen {{ forloop.counter }}"
+                                    >
+                                        <img
+                                            src="{{ imagen.imagen.url }}"
+                                            class="img-fluid w-100"
+                                            alt="{{ imagen.descripcion|default:inmueble.titulo }}"
+                                            style="height: 90px; object-fit: cover;"
+                                        >
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="mb-3">
+                        <span class="badge bg-dark mb-2">{{ inmueble.tipo.nombre }}</span>
+                        <h2 class="fw-bold mb-1">{{ inmueble.titulo }}</h2>
+                        <p class="text-muted mb-0">
+                            <i class="bi bi-geo-alt"></i>
+                            {{ inmueble.ciudad.nombre }}
+                        </p>
+                    </div>
+
+                    <div class="border rounded p-3 bg-light mb-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Precio</span>
+                            <span class="fs-3 fw-bold text-dark">${{ inmueble.precio }}</span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-sm-6">
+                            <div class="border rounded p-3 h-100">
+                                <p class="text-muted mb-1">Habitaciones</p>
+                                <h5 class="mb-0">{{ inmueble.habitaciones }}</h5>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="border rounded p-3 h-100">
+                                <p class="text-muted mb-1">Tipo de inmueble</p>
+                                <h5 class="mb-0">{{ inmueble.tipo.nombre }}</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h5 class="fw-bold mb-3">Descripcion</h5>
+                        <p class="text-muted mb-0">{{ inmueble.descripcion|linebreaksbr }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const imagenPrincipal = document.getElementById('imagenPrincipal');
+    const miniaturas = Array.from(document.querySelectorAll('.miniatura-galeria'));
+    const prevBtn = document.getElementById('prevImagen');
+    const nextBtn = document.getElementById('nextImagen');
+
+    if (!imagenPrincipal || miniaturas.length === 0) {
+        return;
+    }
+
+    let indiceActual = 0;
+
+    function marcarActiva(indice) {
+        miniaturas.forEach(function (miniatura, posicion) {
+            miniatura.classList.toggle('border-dark', posicion === indice);
+            miniatura.classList.toggle('border-2', posicion !== indice);
+        });
+    }
+
+    function mostrarImagen(indice) {
+        const miniatura = miniaturas[indice];
+
+        if (!miniatura) {
+            return;
+        }
+
+        imagenPrincipal.src = miniatura.dataset.src;
+        imagenPrincipal.alt = miniatura.dataset.alt;
+        indiceActual = indice;
+        marcarActiva(indiceActual);
+    }
+
+    miniaturas.forEach(function (miniatura, indice) {
+        miniatura.addEventListener('click', function () {
+            mostrarImagen(indice);
+        });
+    });
+
+    if (prevBtn) {
+        prevBtn.addEventListener('click', function () {
+            const nuevoIndice = (indiceActual - 1 + miniaturas.length) % miniaturas.length;
+            mostrarImagen(nuevoIndice);
+        });
+    }
+
+    if (nextBtn) {
+        nextBtn.addEventListener('click', function () {
+            const nuevoIndice = (indiceActual + 1) % miniaturas.length;
+            mostrarImagen(nuevoIndice);
+        });
+    }
+
+    marcarActiva(indiceActual);
+});
+</script>
+{% endblock %}
