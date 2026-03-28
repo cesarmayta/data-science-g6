@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Inmueble,Agente
+from .models import Inmueble,Agente,ImagenInmueble
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout
@@ -77,7 +77,24 @@ def logout_view(request):
 @login_required
 def crear_inmueble(request):
     if request.method == "POST":
-        form = InmuebleForm()
+        form = InmuebleForm(request.POST)
+        
+        if form.is_valid():
+            inmueble = form.save(commit=False)
+            inmueble.agente = request.user.agente
+            inmueble.save()
+            
+            archivos = request.FILES.getlist('imagenes')
+
+            for archivo in archivos:
+                ImagenInmueble.objects.create(
+                    inmueble=inmueble,
+                    imagen=archivo
+                )
+            
+            return redirect('/')
+        
+            
     else:
         form = InmuebleForm()
         
