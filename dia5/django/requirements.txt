@@ -3,3 +3,4 @@ Pillow
 mysqlclient
 django-crispy-forms
 crispy-bootstrap5
+housing-predictor-cesar

@@ -29,4 +29,4 @@ class InmuebleForm(forms.ModelForm):
     
     class Meta:
         model = Inmueble
-        fields = ['titulo','descripcion','precio','habitaciones','tipo','ciudad']
+        fields = ['titulo','descripcion','habitaciones','tipo','ciudad']

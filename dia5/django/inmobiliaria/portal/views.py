@@ -8,6 +8,8 @@ from django.contrib.auth.decorators import login_required
 from .forms import InmuebleForm
 from .forms import RegistroAgenteForm
 
+from housing_predictor import predict_price
+
 # Create your views here.
 def lista_inmuebles(request):
     inmuebles = Inmueble.objects.all() # select * from portal_inmueble
@@ -82,6 +84,8 @@ def crear_inmueble(request):
         if form.is_valid():
             inmueble = form.save(commit=False)
             inmueble.agente = request.user.agente
+            habitaciones = form.cleaned_data['habitaciones']
+            inmueble.precio = predict_price(habitaciones)
             inmueble.save()
             
             archivos = request.FILES.getlist('imagenes')
