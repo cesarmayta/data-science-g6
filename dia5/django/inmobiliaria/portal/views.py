@@ -3,7 +3,9 @@ from .models import Inmueble,Agente
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 
+from .forms import InmuebleForm
 from .forms import RegistroAgenteForm
 
 # Create your views here.
@@ -71,3 +73,17 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('/')
+
+@login_required
+def crear_inmueble(request):
+    if request.method == "POST":
+        form = InmuebleForm()
+    else:
+        form = InmuebleForm()
+        
+    context = {
+        'form': form
+    }
+    
+    return render(request,'portal/crear_inmueble.html',context)
+    

@@ -39,6 +39,9 @@
                             <span class="me-3 mt-2">
                                 👤 {{ user.username }}
                             </span>
+                            <a href="{% url 'crear_inmueble' %}" class="btn btn-dark me-2">
+                                + Publicar Inmueble
+                            </a>
                             <a href="{% url 'logout' %}" class="btn btn-outline-danger">
                                 Cerrar sesión
                             </a>

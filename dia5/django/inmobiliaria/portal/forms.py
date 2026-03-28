@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Agente
+from .models import Agente,Inmueble
 
 class RegistroAgenteForm(forms.ModelForm):
     
@@ -16,3 +16,9 @@ class LoginForm(forms.Form):
 
     username = forms.CharField(label="Usuario")
     password = forms.CharField(widget=forms.PasswordInput, label="Contraseña")
+    
+class InmuebleForm(forms.ModelForm):
+    
+    class Meta:
+        model = Inmueble
+        fields = ['titulo','descripcion','precio','habitaciones','tipo','ciudad']
