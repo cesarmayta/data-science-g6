@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Autos Usados</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">AUTOS USADOS</h1>
+
+        <!-- Formulario para agregar auto -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5>Agregar Nuevo Auto</h5>
+            </div>
+            <div class="card-body">
+                <form id="addCarForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="fuel_type" class="form-label">Tipo de Combustible</label>
+                            <select class="form-select" id="fuel_type" required>
+                                <option value="">Seleccionar</option>
+                                <option value="gasolina">Gasolina</option>
+                                <option value="other">Otro</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="gearbox" class="form-label">Transmisión</label>
+                            <select class="form-select" id="gearbox" required>
+                                <option value="">Seleccionar</option>
+                                <option value="automatico">Automático</option>
+                                <option value="manual">Manual</option>
+                                <option value="semi-automatico">Semi-automático</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="mileage_km" class="form-label">Kilometraje (km)</label>
+                            <input type="number" step="0.01" class="form-control" id="mileage_km" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="year" class="form-label">Año</label>
+                            <input type="number" class="form-control" id="year" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="power_hp" class="form-label">Potencia (HP)</label>
+                            <input type="number" step="0.01" class="form-control" id="power_hp" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="engine_size" class="form-label">Tamaño del Motor (cc)</label>
+                            <input type="number" step="0.01" class="form-control" id="engine_size" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="cylinders" class="form-label">Cilindros</label>
+                            <input type="number" step="0.01" class="form-control" id="cylinders" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Agregar Auto</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tabla de autos -->
+        <div class="card">
+            <div class="card-header">
+                <h5>Lista de Autos</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped" id="carsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Combustible</th>
+                            <th>Transmisión</th>
+                            <th>Kilometraje</th>
+                            <th>Año</th>
+                            <th>Potencia</th>
+                            <th>Motor</th>
+                            <th>Cilindros</th>
+                            <th>Precio</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="carsTableBody">
+                        <!-- Los autos se cargarán aquí -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar auto -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Editar Auto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editCarForm">
+                        <input type="hidden" id="editId">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="edit_fuel_type" class="form-label">Tipo de Combustible</label>
+                                <select class="form-select" id="edit_fuel_type" required>
+                                    <option value="gasolina">Gasolina</option>
+                                    <option value="other">Otro</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="edit_gearbox" class="form-label">Transmisión</label>
+                                <select class="form-select" id="edit_gearbox" required>
+                                    <option value="automatico">Automático</option>
+                                    <option value="manual">Manual</option>
+                                    <option value="semi-automatico">Semi-automático</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="edit_mileage_km" class="form-label">Kilometraje (km)</label>
+                                <input type="number" step="0.01" class="form-control" id="edit_mileage_km" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="edit_year" class="form-label">Año</label>
+                                <input type="number" class="form-control" id="edit_year" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="edit_power_hp" class="form-label">Potencia (HP)</label>
+                                <input type="number" step="0.01" class="form-control" id="edit_power_hp" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="edit_engine_size" class="form-label">Tamaño del Motor (cc)</label>
+                                <input type="number" step="0.01" class="form-control" id="edit_engine_size" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="edit_cylinders" class="form-label">Cilindros</label>
+                                <input type="number" step="0.01" class="form-control" id="edit_cylinders" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Actualizar Auto</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Vanilla JS -->
+    <script>
+        const API_BASE = '/car';
+
+        // Cargar autos al inicio
+        document.addEventListener('DOMContentLoaded', loadCars);
+
+        // Función para cargar autos
+        async function loadCars() {
+            try {
+                const response = await fetch(API_BASE);
+                const cars = await response.json();
+                renderCars(cars);
+            } catch (error) {
+                console.error('Error cargando autos:', error);
+            }
+        }
+
+        // Renderizar autos en la tabla
+        function renderCars(cars) {
+            const tbody = document.getElementById('carsTableBody');
+            tbody.innerHTML = '';
+            cars.forEach(car => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${car.id}</td>
+                    <td>${car.fuel_type}</td>
+                    <td>${car.gearbox}</td>
+                    <td>${car.milage_km}</td>
+                    <td>${car.year}</td>
+                    <td>${car.power_hp}</td>
+                    <td>${car.engine_size}</td>
+                    <td>${car.cylinders}</td>
+                    <td>${car.price ? car.price.toFixed(2) : 'N/A'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning me-2" onclick="editCar(${car.id})">Editar</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteCar(${car.id})">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Agregar auto
+        document.getElementById('addCarForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const data = {
+                fuel_type: document.getElementById('fuel_type').value,
+                gearbox: document.getElementById('gearbox').value,
+                mileage_km: parseFloat(document.getElementById('mileage_km').value),
+                year: parseInt(document.getElementById('year').value),
+                power_hp: parseFloat(document.getElementById('power_hp').value),
+                engine_size: parseFloat(document.getElementById('engine_size').value),
+                cylinders: parseFloat(document.getElementById('cylinders').value)
+            };
+            try {
+                const response = await fetch(API_BASE, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (response.ok) {
+                    loadCars();
+                    document.getElementById('addCarForm').reset();
+                } else {
+                    alert('Error agregando auto');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+
+        // Editar auto
+        async function editCar(id) {
+            try {
+                const response = await fetch(`${API_BASE}/${id}`);
+                const car = await response.json();
+                document.getElementById('editId').value = car.id;
+                document.getElementById('edit_fuel_type').value = car.fuel_type;
+                document.getElementById('edit_gearbox').value = car.gearbox;
+                document.getElementById('edit_mileage_km').value = car.milage_km;
+                document.getElementById('edit_year').value = car.year;
+                document.getElementById('edit_power_hp').value = car.power_hp;
+                document.getElementById('edit_engine_size').value = car.engine_size;
+                document.getElementById('edit_cylinders').value = car.cylinders;
+                new bootstrap.Modal(document.getElementById('editModal')).show();
+            } catch (error) {
+                console.error('Error cargando auto para editar:', error);
+            }
+        }
+
+        // Actualizar auto
+        document.getElementById('editCarForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('editId').value;
+            const data = {
+                fuel_type: document.getElementById('edit_fuel_type').value,
+                gearbox: document.getElementById('edit_gearbox').value,
+                mileage_km: parseFloat(document.getElementById('edit_mileage_km').value),
+                year: parseInt(document.getElementById('edit_year').value),
+                power_hp: parseFloat(document.getElementById('edit_power_hp').value),
+                engine_size: parseFloat(document.getElementById('edit_engine_size').value),
+                cylinders: parseFloat(document.getElementById('edit_cylinders').value)
+            };
+            try {
+                const response = await fetch(`${API_BASE}/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                if (response.ok) {
+                    loadCars();
+                    bootstrap.Modal.getInstance(document.getElementById('editModal')).hide();
+                } else {
+                    alert('Error actualizando auto');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+
+        // Eliminar auto
+        async function deleteCar(id) {
+            if (confirm('¿Estás seguro de eliminar este auto?')) {
+                try {
+                    const response = await fetch(`${API_BASE}/${id}`, { method: 'DELETE' });
+                    if (response.ok) {
+                        loadCars();
+                    } else {
+                        alert('Error eliminando auto');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
