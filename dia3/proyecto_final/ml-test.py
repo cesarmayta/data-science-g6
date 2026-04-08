@@ -89,3 +89,5 @@ new_car_features = {
 
 predicted = predict_new_car_price(**new_car_features)
 print(f"Predicted price: {predicted:.2f} Euros")
+
+
