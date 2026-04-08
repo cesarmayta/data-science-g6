@@ -171,9 +171,82 @@ def set_data():
 
 @app.route('/car',methods=['GET'])
 def get_data():
-    data = Car.query.all() # select * from housing
+    data = Car.query.all() # select * from car
     data_schema = CarSchema(many=True)
     return jsonify(data_schema.dump(data))
+
+@app.route('/car/<int:id>',methods=['GET'])
+def get_data_by_id(id):
+    data = Car.query.get(id) # select * from car where id = id
+    data_schema = CarSchema()
+    
+    return jsonify(data_schema.dump(data)),200 if data else 404
+
+@app.route('/car/<int:id>',methods=['PUT'])
+def update_data(id):
+    car_data = Car.query.get(id) #select * from housing where id = id
+    if not car_data:
+        context = {
+            'message':'Registro no encontrado'
+        }
+        return jsonify(context),404
+    
+    data = request.json
+    fuel_type = data.get('fuel_type')
+    gearbox = data.get('gearbox')
+    mileage_km = data.get('mileage_km')
+    year = data.get('year')
+    power_hp = data.get('power_hp')
+    engine_size = data.get('engine_size')
+    cylinders = data.get('cylinders')
+    
+    new_car_features = {
+        'fuel_type_input': fuel_type,
+        'gearbox_input': gearbox,
+        'mileage_km': mileage_km,
+        'year': year,
+        'power_hp': power_hp,
+        'engine_size_cc': engine_size,
+        'cylinders': cylinders
+    }
+
+    price = predict_new_car_price(**new_car_features)
+    
+    car_data.fuel_type = fuel_type
+    car_data.gearbox = gearbox
+    car_data.milage_km = mileage_km
+    car_data.year = year
+    car_data.power_hp = power_hp
+    car_data.engine_size = engine_size
+    car_data.cylinders = cylinders
+    car_data.price = price
+    
+
+    db.session.commit()
+    
+    data_schema = CarSchema()
+    
+    return jsonify(data_schema.dump(car_data)),200
+
+
+@app.route('/car/<int:id>',methods=['DELETE'])
+def delete_data(id):
+    data = Car.query.get(id)
+    
+    if not data:
+        context = {
+            'message':'Registro no encontrado'
+        }
+        return jsonify(context),404
+    
+    db.session.delete(data) #delete from housing
+    db.session.commit()
+    
+    context = {
+        'message':'Registro eliminado correctamente'
+    }
+    
+    return jsonify(context),200
 
 if __name__ == '__main__':
     app.run(debug=True)
