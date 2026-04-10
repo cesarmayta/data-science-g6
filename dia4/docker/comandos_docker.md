@@ -37,4 +37,4 @@ docker exec -it mi-gninx bash
 # VOLUMENES
 docker volume ls
 docker volume create web
-docker run -d --rm -p 8080:80 -v c:/html:/usr/share/nginx/html --name nginx-codigo nginx:alpine
+docker run -d --rm -p 8080:80 -v $(pwd)/html:/usr/share/nginx/html --name nginx-custom nginx
